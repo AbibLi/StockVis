@@ -18,22 +18,3 @@ export default class CompanyDto {
     unRealizedCapitalGains_21072023: number | undefined;
     InvestmentPerformance:number |undefined;
 }
-
-// export default interface CompanyDto {
-//     No: number;
-//     Company: string;
-//     Ticker: string;
-//     DateOfFirstPurchase: string;
-//     DateOfLastPurchase: string;
-//     NumberOfSharesPurchased: number;
-//     TotalPurchasedPrice: number
-//     AveragePricePerShare: number;
-//     DateOfFirstSell: string;
-//     DateOfLastSell: string;
-//     TotalNumberOfSharesSold: number;
-//     PricePerShareLastSell: number;
-//     NetNumberOfShares: number;
-//     CurrentPrice_03082023: number;
-//     TotalDividends_21072023: number;
-//     RealizedCapitalGains_21072023: number;
-// }

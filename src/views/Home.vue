@@ -55,12 +55,13 @@ import Calendar from '../components/Calendar.vue'
 }
 
 #lmain {
-  width: 35%;
+  width: 38%;
   height: 750px;
 }
 
 #rmain {
   width: 50%;
+  padding-left: 5px;
 }
 
 el-button {

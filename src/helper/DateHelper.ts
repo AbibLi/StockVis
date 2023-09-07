@@ -1,4 +1,9 @@
-//将时间戳转为日期时间
+/**
+ * Convert timestamp to date string
+ * 
+ * @param serial  * Convert timestamp to date string
+ * @returns date string,eg:2018-07-08
+ */
 export function formatDateFromSerial(serial: number): string {
     // Excel's base date is 1900-01-01, but it has a bug where it thinks 1900 is a leap year.
     // Hence, we adjust for that by subtracting 1 for dates after 1900-02-28 (60 in serial value)
@@ -20,7 +25,12 @@ export function formatDateFromSerial(serial: number): string {
 }
 
 
-//格式话日期为： yyyy-MM-dd
+/**
+ * Format date as string like 'yyyy-MM-dd'
+ * 
+ * @param date date
+ * @returns Formatted date
+ */
 export function FormatDate_yyyyMMdd(date: Date) {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');

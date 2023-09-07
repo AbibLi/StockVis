@@ -14,7 +14,9 @@ const BasicData = useBasicdataStore();
 const chartDom = ref<HTMLElement | null>(null);
 let myChart: any;
 
-
+/**
+ * Refresh the current view when monitoring shared data changes
+ */
 BasicData.$subscribe(() => {
   drawChart();
 })
@@ -29,7 +31,13 @@ onBeforeUnmount(() => {
     myChart.dispose()
 })
 
-
+/**
+ * Draw a sunburst chart
+ * 
+ * @remark
+ * Group stock data by transaction type and company, and then draw a sunburst chart,
+ * Used to display the proportion of data volume for each transaction type and the proportion of companies under each transaction type 
+ */
 const drawChart = () => {
   if (chartDom.value) {
     var BindData: any = [

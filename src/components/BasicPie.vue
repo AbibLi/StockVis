@@ -14,7 +14,9 @@ const BasicData = useBasicdataStore();
 const chartDom = ref<HTMLElement | null>(null);
 let myChart: any;
 
-
+/**
+ * Refresh the current view when monitoring shared data changes
+ */
 BasicData.$subscribe(() => {
     drawChart();
 })
@@ -29,7 +31,11 @@ onBeforeUnmount(() => {
         myChart.dispose()
 })
 
-
+/**
+ * Draw a stacked bar chart
+ * 
+ * @remark Group the shares in the shared state inventory by company and draw a pie chart to display the proportion of the company's stock trading volume at the current time
+ */
 const drawChart = () => {
     if (chartDom.value) {
         var BindData: any = []

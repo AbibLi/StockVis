@@ -42,13 +42,29 @@ const stockDatas = BasicData.stockDatas;
 const viewType = ref(BasicData.viewType);
 
 const currentDate = ref(new Date(BasicData.currDate));
-//监听共享数据的引用， 并及时更新存储库中对应的数据，从而让使用到此共享数据的其他图表也及时刷新
+/**
+ * Watches for changes in 'currentDate' and 'viewType'
+ * 
+ * @remark 
+ * When the user switches views and selects a time,
+ * they actively update the corresponding sharing status so that other components can listen for changes and refresh the view
+ * 
+ * @param newDate - The new value of 'currentDate'.
+ * @param newType - The new value of 'viewType'.
+ */
 watch([currentDate, viewType], ([newDate, newType]) => {
     BasicData.currDate = FormatDate_yyyyMMdd(newDate)
     BasicData.viewType = newType
 });
 
-//只显示当月日期的饼图
+
+/**
+ * Pie chart displaying only the current month and date
+ * 
+ * @param cellDate - Date of each cell in the calendar chart
+ * 
+ * @returns Display or not
+ */
 const shouldShowChart = (cellDate: string) => {
     const date = new Date(cellDate);
     return date.getMonth() === currentDate.value.getMonth();
@@ -57,7 +73,15 @@ const shouldShowChart = (cellDate: string) => {
 const echartsContainers = ref<HTMLElement[]>([]);
 
 
-//动态绘制日历表中饼图的方法
+/**
+ * Dynamically draw pie charts for each date in the calendar table
+ * 
+ * @remark
+ * Group stock data by date and plot it in the date cell of the calendar chart
+ * 
+ * @param el -HTML elements for each date in the calendar chart
+ * @param date -A date in the calendar
+ */
 const initEcharts = (el: HTMLElement | null, date: string) => {
     if (!el) return;
 
@@ -107,7 +131,13 @@ const initEcharts = (el: HTMLElement | null, date: string) => {
     })
 };
 
-//股票根据公司分组
+/**
+ * Stocks data grouped by company
+ * 
+ * @param data -Data that needs to be grouped
+ * 
+ * @returns Grouped data
+ */
 const GroupByTicker = (data: StockDto[]) => {
     const groupedData = data.reduce((key, value) => {
         const groupKey = value.Ticker;
@@ -123,7 +153,13 @@ const GroupByTicker = (data: StockDto[]) => {
     return groupedData
 }
 
-
+/**
+ * Roughly plot the radius of a pie chart based on stock trading volume
+ * 
+ * @param value -Total stock trading volume
+ * 
+ * @returns Calculated radius for pie chart
+ */
 const calRadiu = (value: number) => {
     let radius = value / 150
     if (radius < 8) radius = 8

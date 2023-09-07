@@ -52,11 +52,17 @@ onBeforeUnmount(() => {
         chartInstance.dispose()
 })
 
+/**
+ * View switching: Cartesian chart, stacked bar chart
+ */
 const viewChange = () => {
     showStackBar.value = !showStackBar.value
     drawChart()
 }
 
+/**
+ * Draw the corresponding view based on the current view category：Cartesian chart, stacked bar chart
+ */
 const drawChart = () => {
     chartInstance.clear()
     if (showStackBar.value)
@@ -65,8 +71,17 @@ const drawChart = () => {
         drawParallel()
 }
 
+/**
+ * Draw a Cartesian chart
+ * 
+ * @remark
+ * Draw a Cartesian Coordinate Map Based on the Selected Axis and Selected Company Data,
+ * such as first purchase time, purchase price, stock price, trading volume, etc
+ */
 const drawParallel = () => {
-    //获取筛选后的坐标轴数据
+    /**
+     * Obtain filtered coordinate axis data
+     */
     let curAxisSelects = AxisTypes.map(t => t.name)
     if (axisSelects.value.length > 0) {
         curAxisSelects = curAxisSelects.filter(t => !axisSelects.value.includes(t))
@@ -96,13 +111,17 @@ const drawParallel = () => {
         }
     })
 
-    //根据筛选后的坐标轴及公司股票数据获取绑定到parallel的数据源
+    /**
+     * Processing the filtered axis and company stock data into a valid data source for echarts' Parallel
+     */
     let BindData: any = []
     CompanyData.forEach((item: CompanyDto) => {
         BindData.push(curAxisSelects.map(key => item[key as keyof CompanyDto]))
     })
 
-    //折线的样式
+    /**
+     * Style of polylines
+     */
     let lineStyle = {
         width: 1.5,
         opacity: 0.8,
@@ -184,6 +203,9 @@ const drawParallel = () => {
 
     chartInstance.setOption(option)
 
+    /**
+     * User selected data highlighting
+     */
     if (showHigh) {
         let highIndexs: number[] = []
         highIndexs = comSelects.value.map(t => CompanyData.map(x => x.No).indexOf(t))
@@ -195,6 +217,13 @@ const drawParallel = () => {
     }
 }
 
+
+/**
+ * Draw a stacked bar chart
+ * 
+ * @remark
+ * Group Stocks of different companies based on transaction types for 'Captial gains&loss' and 'Total dividends', and draw a sorted stacked bar chart
+ */
 const drawStackedBar = () => {
     var companys = [] as string[]
     var companysLabels = [] as string[]
@@ -271,7 +300,7 @@ const drawStackedBar = () => {
     chartInstance.on('legendselectchanged', (params: any) => {
         var selectedSeries = params.selected;
 
-        // 计算各列的总和
+        // Calculate the sum of each column
         var sums: any = {};
         companys.forEach((company, index) => {
             if (selectedSeries['Captial gains&loss']) {
@@ -301,7 +330,7 @@ const drawStackedBar = () => {
             return 0;
         });
 
-        // 更新 Y 轴的数据和对应系列的数据
+        //Update the data of the Y-axis and corresponding series
         chartInstance.setOption({
             yAxis: {
                 type: 'category',

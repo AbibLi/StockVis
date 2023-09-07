@@ -12,6 +12,9 @@ import { useBasicdataStore } from '../store/BasicData.ts'
 const BasicData = useBasicdataStore();
 const chartDom = ref<HTMLElement | null>(null);
 
+/**
+ * Refresh the current view when monitoring shared data changes
+ */
 BasicData.$subscribe(() => {
   drawChart();
 })
@@ -19,8 +22,12 @@ onMounted(() => {
   drawChart()
 });
 
+/**
+ * Draw a stacked bar chart
+ * 
+ * @remark Group stock data based on transaction types for buying, selling, dividends, and deposit, and draw a stacked bar chart
+ */
 const drawChart = () => {
-
   const tickers = [] as string[]
   const buyArr = [] as number[]
   const sellArr = [] as number[]

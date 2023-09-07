@@ -7,7 +7,9 @@ import { formatDateFromSerial } from '../helper/DateHelper'
 
 export const useBasicdataStore = defineStore('basicdata', {
     state: () => {
-        //获取json文件的数据并转为对应的模型类型
+        /** 
+         * Obtain the companys' data from the JSON file and convert it to the corresponding model type
+         */
         const companyDatas = companyjson.CompanyData.map(item => {
             return {
                 No: item.No,
@@ -31,6 +33,9 @@ export const useBasicdataStore = defineStore('basicdata', {
             } as CompanyDto
         });
 
+        /**
+         * Obtain the stocks' data from the JSON file
+         */
         const stockDatas = stockjson.StockData as StockDto[];
         stockDatas.forEach(t => t.TransactionDate = formatDateFromSerial(t.TransactionDate as number))
 
@@ -47,8 +52,15 @@ export const useBasicdataStore = defineStore('basicdata', {
         }
     },
     getters: {
+        /**
+         * Traverse the required axes for parallel coordinate systems based on the attributes of the company model
+         * 
+         * @returns Axis required for parallel coordinate chart
+         */
         getAxisTypes: () => {
-            // 获取所有属性名
+            /**
+             * Get all property names of an object
+             */
             let keys = Object.keys(new CompanyDto());
             let AxisTypes = new Array<AxisType>();
             keys.forEach(value => {
@@ -60,7 +72,9 @@ export const useBasicdataStore = defineStore('basicdata', {
             })
             return AxisTypes;
         },
-        //获取选中日期的股票数据
+        /**
+         * Obtain stock data for the selected date
+         */
         getCurrDateStocks: (state) => {
             if (state.viewType == "calendar")
                 return state.stockDatas.filter(t => t.TransactionDate === state.currDate)
@@ -71,7 +85,12 @@ export const useBasicdataStore = defineStore('basicdata', {
             }
         },
 
-        //获取根据公司分组后的股票数据
+        /**
+         * Obtain stock data grouped by company
+         * @param state Pinia's state library
+         * 
+         * @returns Obtain stock data grouped by company
+         */
         getGroupByTicker: (state) => (param: StockDto[] | undefined = undefined) => {
             let data = []
             if (param != undefined && Array.isArray(param)) {
@@ -99,6 +118,11 @@ export const useBasicdataStore = defineStore('basicdata', {
         }
     },
     actions: {
+        /**
+         * Sort Company Data By Investment Performance  
+         * 
+         * @returns  Sorted data
+         */
         SortCompanyDataByInvestmentPerformance() {
             this.companyDatas.forEach(t => {
                 t.InvestmentPerformance = Number((Number(t.TotalDividends_21072023) + Number(t.RealizedCapitalGains_21072023) + Number(t.unRealizedCapitalGains_21072023)).toFixed(2))

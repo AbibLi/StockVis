@@ -25,8 +25,15 @@ import { useBasicdataStore } from '../store/BasicData.ts'
 import StockDto from '../model/StockDto'
 
 const BasicData = useBasicdataStore();
+
+/**
+ * Binding data for tables:From data sharing library
+ */
 const bindData = ref(new Array<StockDto>)
 
+/**
+ * Refresh the current view when monitoring shared data changes
+ */
 BasicData.$subscribe(() => {
     bindData.value = BasicData.filterStr.length > 0 && BasicData.viewType === "period" ? BasicData.filterData : BasicData.getCurrDateStocks;
 })

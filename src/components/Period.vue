@@ -56,7 +56,14 @@ import StockDto from '../model/StockDto'
 const BasicData = useBasicdataStore()
 const period = ref([new Date("2022-01-01"), new Date("2022-12-31")]);
 const filterType = ref("day")       //day,month,year
-watch(filterType, () => {
+
+/**
+ * Watches for changes in 'filterType'
+ * 
+ * @remark 
+ * When the user switches time filter categories,call the function 'filterTypeChange' to Do related things
+ */
+watch(filterType,() => {
     filterTypeChange();
 });
 
@@ -66,6 +73,9 @@ onMounted(() => {
     queryClick();
 });
 
+/**
+ * After selecting the time, the user clicks on 'Query' and updates the corresponding shared state library and global variables based on the queried data
+ */
 const queryClick = () => {
     if (period.value.length == 0) {
         ElMessage({
@@ -81,7 +91,15 @@ const queryClick = () => {
     tableData.value = getTableData();
 }
 
-const getMonthDesc = (month: any) => {
+
+/**
+ * Obtain a description based on month values
+ * 
+ * @param month Number corresponding to month
+ * 
+ * @return  Description of month values,such as 1:Jan,2:Feb
+ */
+const getMonthDesc = (month: number) => {
     if (month === 1) return "Jan"
     else if (month === 2) return "Feb"
     else if (month === 3) return "Mar"
@@ -97,6 +115,10 @@ const getMonthDesc = (month: any) => {
     else return "NaN"
 }
 
+
+/**
+ * Obtain calendar tables with more current time categories(filterType)
+ */
 const getTableData = () => {
     if (filterType.value === "day") {
         return DataDroupByDay();
@@ -109,7 +131,9 @@ const getTableData = () => {
     }
 }
 
-//根据时间段内的数据按照月分组
+/**
+ * Stock data is grouped by month and by day
+ */
 const DataDroupByDay = () => {
     const stockData = BasicData.getCurrDateStocks
     const bindData: any = []
@@ -128,6 +152,9 @@ const DataDroupByDay = () => {
     return bindData
 }
 
+/**
+ * Stock data is grouped by month
+ */
 const DataDroupByMonth = () => {
     const stockData = BasicData.getCurrDateStocks
     const groupedData = stockData.reduce((key, value) => {
@@ -142,6 +169,10 @@ const DataDroupByMonth = () => {
     return Object.entries(groupedData).sort((a, b) => Number(a[0]) - Number(b[0])).map(entry => entry[1])
 }
 
+
+/**
+ * Stock data is grouped by year
+ */
 const DataDroupByYear = () => {
     const stockData = BasicData.getCurrDateStocks
     const groupedData = stockData.reduce((key, value) => {
@@ -156,18 +187,24 @@ const DataDroupByYear = () => {
     return groupedData
 }
 
+/**
+ * Dynamically draw pie charts for each date in the calendar table
+ * 
+ * @param el -HTML elements for each date in the Calendar Table
+ * @param pieData -Calendar Table Cell Data
+ */
 const initChart = (el: HTMLElement, pieData: any) => {
     nextTick(() => {
         let myChart: echarts.ECharts;
 
-        //避免重复创建echarts实例
+        //Avoiding duplicate creation of echarts instances
         if (echarts.getInstanceByDom(el)) {
             myChart = echarts.getInstanceByDom(el) as echarts.ECharts;
         } else {
             myChart = echarts.init(el);
         }
 
-        //只绘制单元格有数据的饼图
+        //Draw only pie charts with data in cells
         if (!pieData) {
             myChart.clear()
             return;
@@ -215,9 +252,15 @@ const initChart = (el: HTMLElement, pieData: any) => {
 
 }
 
-//日历表格的点击事件
+/**
+ * Calendar cell click events
+ * 
+ * @remark Click on the calendar pie chart cell and change the corresponding sharing status to trigger view refresh
+ * 
+ * @param stockData -Data bound in calendar cells
+ */
 const DateClick = (stockData: StockDto[]) => {
-    if (!stockData) {
+    if(!stockData){
         BasicData.filterData = []
         BasicData.filterStr = " "
         return;
@@ -227,16 +270,19 @@ const DateClick = (stockData: StockDto[]) => {
         BasicData.filterStr = (stockData[0].TransactionDate as string).slice(5)
     }
     else if (filterType.value == "month") {
-        BasicData.filterStr = getMonthDesc((new Date(stockData[0].TransactionDate as string)).getMonth() + 1)
+        BasicData.filterStr =getMonthDesc((new Date(stockData[0].TransactionDate as string)).getMonth() + 1)
     }
     else if (filterType.value == "year") {
-        BasicData.filterStr = (stockData[0].TransactionDate as string).slice(0, 4)
+        BasicData.filterStr = (stockData[0].TransactionDate as string).slice(0,4)
     }
     else {
         BasicData.filterStr = ""
     }
 }
 
+/**
+ * Time filter category change event
+ */
 const filterTypeChange = () => {
     tableData.value = getTableData()
 }
